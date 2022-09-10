@@ -8,6 +8,7 @@ import schemaTypes from 'all:part:@sanity/base/schema-type'
 import cuisine from './cuisine'
 import restaurant from './restaurant'
 import dish from './dish'
+import featured from './featured'
 
 // Then we give our schema to the builder and provide the result to Sanity
 export default createSchema({
@@ -16,5 +17,6 @@ export default createSchema({
     restaurant,
     dish,
     cuisine,
+    featured,
   ]),
 })

@@ -51,7 +51,7 @@ export default {
       name: 'cuisine',
       title: 'Cuisine',
       type: 'reference',
-      to: [{ type: "category" }],
+      to: [{ type: "cuisine" }],
       validation: (Rule) => Rule.required(),
     },
     {
