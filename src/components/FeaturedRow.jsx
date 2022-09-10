@@ -1,8 +1,44 @@
 import { View, Text, ScrollView } from "react-native";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { ArrowRightIcon } from "react-native-heroicons/outline";
 import RestaurantCard from "./RestaurantCard";
+import sanityClient from "../../sanity";
 const FeaturedRow = ({ id, title, description }) => {
+  const [restaurants, setRestaurants] = useState([]);
+
+  useEffect(() => {
+    sanityClient
+      .fetch(
+        `
+          *[_type == "featured" && _id == $id] {
+            name,
+            shortDescription,
+            restaurants[]->{
+              name,
+              shortDescription,
+              image,
+              address,
+              rating,
+              lat,
+              long,
+              cuisine->{
+                title
+              },
+              dishes[]->{
+                name,
+                price,
+                image,
+                shortDescription
+              }
+            }
+          }[0]
+        `,
+        { id }
+      )
+      .then((data) => setRestaurants(data.restaurants))
+      .catch((e) => console.log(e.message));
+  }, []);
+
   return (
     <View>
       <View className="mt-4 flex-row items-center justify-between px-4">
@@ -19,42 +55,21 @@ const FeaturedRow = ({ id, title, description }) => {
         className="pt-4"
       >
         {/* RestaurantCards */}
-        <RestaurantCard
-          id="restaurant1"
-          imgUrl="https://links.papareact.com/wru"
-          title="Il Cenacolo"
-          rating={4.5}
-          genre="Italian"
-          address="123 Granollers St"
-          shortDescription="This is a test description"
-          dishes={[]}
-          long={20}
-          lat={1}
-        />
-        <RestaurantCard
-          id="restaurant1"
-          imgUrl="https://links.papareact.com/wru"
-          title="Il Cenacolo"
-          rating={4.5}
-          genre="Italian"
-          address="123 Granollers St"
-          shortDescription="This is a test description"
-          dishes={[]}
-          long={20}
-          lat={1}
-        />
-        <RestaurantCard
-          id="restaurant1"
-          imgUrl="https://links.papareact.com/wru"
-          title="Il Cenacolo"
-          rating={4.5}
-          genre="Italian"
-          address="123 Granollers St"
-          shortDescription="This is a test description"
-          dishes={[]}
-          long={20}
-          lat={1}
-        />
+        {restaurants &&
+          restaurants.map((restaurant) => (
+            <RestaurantCard
+              key={restaurant._id}
+              imgUrl={restaurant.image}
+              title={restaurant.name}
+              rating={restaurant.rating}
+              genre={restaurant.cuisine.title}
+              address={restaurant.address}
+              shortDescription={restaurant.shortDescription}
+              dishes={restaurant.dishes}
+              long={restaurant.long}
+              lat={restaurant.lat}
+            />
+          ))}
       </ScrollView>
     </View>
   );

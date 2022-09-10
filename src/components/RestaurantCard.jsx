@@ -15,7 +15,7 @@ const RestaurantCard = ({
   lat,
 }) => {
   return (
-    <TouchableOpacity className="bg-white mr-3 shadow-sm">
+    <TouchableOpacity className="bg-white mr-3 shadow-sm w-64">
       <Image source={{ uri: imgUrl }} className="h-64 w-64 rounded-sm" />
       <View className="px-3 pb-4">
         <Text className="font-bold text-l pt-2">{title}</Text>
